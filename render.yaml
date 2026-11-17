@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: telesrv
+    runtime: docker
+    plan: starter
+    disk:
+      name: data
+      mountPath: /app/data
+      sizeGB: 1
+    envVars:
+      - key: TELESRV_POSTGRES_DSN
+        fromDatabase:
+          name: telesrv-db
+          property: connectionString
+      - key: TELESRV_REDIS_ADDR
+        sync: false
+      - key: TELESRV_LISTEN
+        value: 0.0.0.0:10000
+      - key: TELESRV_WEBSOCKET_ENABLE
+        value: "true"
+      - key: TELESRV_WEBSOCKET_ALLOWED_ORIGINS
+        value: https://telesrv.onrender.com
+      - key: TELESRV_DEFAULT_COUNTRY_CODE
+        value: RU
+  - type: keyvalue
+    name: telesrv-redis
+    ipAllowList: []
+databases:
+  - name: telesrv-db
